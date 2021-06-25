@@ -1,5 +1,6 @@
 const db = require("..");
 
+//No me funciono la bd
 //Datos de ejemplo para el chatbot auditor - Poblado de tablas cuestionarios y preguntas
 
 let cuestionarios = [
