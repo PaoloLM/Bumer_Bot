@@ -1,6 +1,5 @@
 const db = require("..");
 
-//No me funciono la bd
 //Datos de ejemplo para el chatbot auditor - Poblado de tablas cuestionarios y preguntas
 
 let cuestionarios = [
@@ -16,19 +15,19 @@ let preguntas = [
   "Cubren los planes del D.l. k« objetivos a cono plazo de la empresa,valórelo.",
 ];
 
-cuestionarios.forEach((cuestionario) => {  
-  db.query(   
+cuestionarios.forEach((cuestionario) => {
+  db.query(
     `insert into cuestionarios(nombre) values('${cuestionario}')`,
     (err, res) => {
       if (err) {
         return console.log(err);
       }
-      console.log("Se terminó de poblar la tabla cuestionarios", res.rows);      
+      console.log("Se terminó de poblar la tabla cuestionarios", res.rows);
     }
   );
 });
 
-/*preguntas.forEach((pregunta, index) => {
+preguntas.forEach((pregunta, index) => {
   db.query(
     `insert into preguntas(pregunta,orden,id_cuestionario) values('${pregunta}',${
       index + 1
@@ -40,4 +39,4 @@ cuestionarios.forEach((cuestionario) => {
       console.log("Se terminó de poblar la tabla preguntas", res.rows);
     }
   );
-});*/
+});
