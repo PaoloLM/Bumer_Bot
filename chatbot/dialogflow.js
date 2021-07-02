@@ -6,7 +6,7 @@ const sessionIds = new Map();
 
 function setSessionAndUser(senderID, source) {
   if (!sessionIds.has(senderID)) {
-    console.log("no habia sesion de usuario y se creara:", senderID);
+    //console.log("no habia sesion de usuario y se creara:", senderID);
     sessionIds.set(senderID, uuid.v1());
   }
 }

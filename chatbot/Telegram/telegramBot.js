@@ -29,6 +29,8 @@ bot.on("callback_query", async (action) => {
   await sendToDialogFlow(senderID, msg);
 });
 
+// Definiendo una palabra en particular
+
 // Función para recibir los mensajes recibidos por el Chatbot
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
@@ -36,8 +38,24 @@ bot.on("message", async (msg) => {
   const message = msg.text;
   //check if user was registered
   saveUserInformation(msg);
-  console.log("mensaje recibido: ", msg);
-  await sendToDialogFlow(sender, message);
+
+  if (msg.text == 'informacion') {
+
+    let card = {
+      title: "Bumer Solutions by Ewoksito and Bumer",
+      image_url: "https://i.ibb.co/wzPQ4Fw/boomersolutions2.png",
+      subtitle: "Este bot fue creado para el curso de Cloud Computing del Ciclo IX",
+      buttons: [{
+        text: "Nuestro Facebook",
+        url: "https://www.facebook.com/Bumer-Solutions-108654684747442"
+      },],
+    };
+    sendGenericMessage(sender, card);
+
+  } else {
+    //console.log("mensaje recibido: ", msg);
+    await sendToDialogFlow(sender, message);
+  }
 });
 
 function saveUserInformation(msg) {
@@ -70,7 +88,7 @@ async function handleDialogFlowResponse(sender, response) {
   if (isDefined(action)) {
     handleDialogFlowAction(sender, action, messages, contexts, parameters);
   } else if (isDefined(messages)) {
-    console.log("se entrara a handleMessages");
+    //console.log("se entrara a handleMessages");
     handleMessages(messages, sender);
   } else if (responseText == "" && !isDefined(action)) {
     //dialogflow could not evaluate input.
@@ -79,7 +97,7 @@ async function handleDialogFlowResponse(sender, response) {
       "I'm not sure what you want. Can you be more specific? gaa"
     );
   } else if (isDefined(responseText)) {
-    console.log("se mandara a sendTextMessage");
+    //console.log("se mandara a sendTextMessage");
     sendTextMessage(sender, responseText);
   }
 }
@@ -130,7 +148,7 @@ async function handleDialogFlowAction(
       id_cuestionario =
         contexts[0].parameters.fields.id_cuestionario.numberValue;
       id_auditoria = parameters.fields.id_auditoria.numberValue;
-      console.log("el id de la auditoria: ", id_auditoria);
+      //console.log("el id de la auditoria: ", id_auditoria);
       //empezando cuestionario
       preguntas = await preguntasService.listByCuestionarioId(id_cuestionario);
       await sendTextMessage(
@@ -178,7 +196,7 @@ async function handleDialogFlowAction(
     case "Respuesta-pregunta.action":
       var ordenPreguntaActual = contexts[0].parameters.fields.orden.numberValue;
       var respuesta = parameters.fields.respuesta.stringValue;
-      console.log("el valor de respuesta: ", respuesta);
+      //console.log("el valor de respuesta: ", respuesta);
       if (respuesta == "No" || respuesta == "N/A") {
         sendToDialogFlow(sender, "activarObservacion");
       } else {
@@ -232,9 +250,9 @@ async function handleDialogFlowAction(
       }
       break;
     default:
-      console.log(
+      /*console.log(
         "se mandara el mensaje por defecto de handleDialogFlowAction"
-      );
+      );*/
       handleMessages(messages, sender);
       break;
   }
@@ -255,10 +273,10 @@ function sendTypingOn(senderID) {
 }
 
 async function handleMessage(message, sender) {
-  console.log("se entro a handleMessage");
+  /*console.log("se entro a handleMessage");
   console.log("mensaje: ", message);
   console.log("switch: ", message.message);
-  console.log("texto: ", message.text);
+  console.log("texto: ", message.text);*/
   switch (message.message) {
     case "text": //text
       for (const text of message.text.text) {
@@ -269,7 +287,7 @@ async function handleMessage(message, sender) {
       break;
     case "quickReplies": //quick replies
       let title = message.quickReplies.title;
-      console.log("el titulo es:", title);
+      /*console.log("el titulo es:", title);*/
       let replies = [];
       message.quickReplies.quickReplies.forEach((text) => {
         replies.push({
@@ -291,7 +309,7 @@ async function handleMessage(message, sender) {
 function handleDialogflowPayload(senderID, payload) {
   let desestructPayload = structProtoToJson(payload);
   let type = desestructPayload.telegram.attachment.payload.template_type;
-  console.log("el mensaje desestructurado: ", desestructPayload);
+  //console.log("el mensaje desestructurado: ", desestructPayload);
   switch (type) {
     case "button":
       let text = desestructPayload.telegram.attachment.payload.text;
@@ -307,7 +325,7 @@ function handleDialogflowPayload(senderID, payload) {
       break;
 
     default:
-      console.log("el tipo de payload no se reconoce...");
+      //console.log("el tipo de payload no se reconoce...");
       break;
   }
 }
@@ -370,10 +388,10 @@ async function handleMessages(messages, sender) {
 }
 
 async function handleCardMessages(messages, senderID) {
-  console.log(
+  /*console.log(
     "se recibio esto en handleCardMessages: ",
     JSON.stringify(messages, null, " ")
-  );
+  );*/
   for (let m = 0; m < messages.length; m++) {
     let message = messages[m];
     let buttons = [];
@@ -400,7 +418,7 @@ async function handleCardMessages(messages, senderID) {
       subtitle: message.card.subtitle || " ",
       buttons: buttons,
     };
-    console.log("el elemento queda asi: ", element);
+    //console.log("el elemento queda asi: ", element);
     await sendGenericMessage(senderID, element);
   }
 }
@@ -416,7 +434,7 @@ async function sendGenericMessage(senderID, element) {
 }
 
 let sendTextMessage = async (senderID, message) => {
-  console.log("Enviando el mensaje: ", senderID, message);
+  console.log("Enviando el mensaje:", senderID, message);
   await bot.sendMessage(senderID, message, {
     parse_mode: "HTML",
   });
